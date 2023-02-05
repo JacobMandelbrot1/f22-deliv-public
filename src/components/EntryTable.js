@@ -8,10 +8,27 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import EntryModal from './EntryModal';
 import { getCategory } from '../utils/categories';
+import Button from "@mui/material/Button";
+import * as React from "react";
+//import { App } from './App.js';
 
 // Table component that displays entries on home screen
 
-export default function EntryTable({ entries }) {
+export default function EntryTable({ entries, option }) {
+   //entries.sort(() => 0.5 - Math.random());
+
+   // const MyComponent = () => {
+   //    const [count, setCount] = setOption(0);
+
+   if(option === "Ascending"){
+      entries.sort((a, b) => (a.rating > b.rating) ? 1 : -1);
+   } else if(option === "Descending"){
+      entries.sort((a, b) => (a.rating < b.rating) ? 1 : -1);
+   } else{
+      entries.sort(() => 0.5 - Math.random());
+   }
+
+   //console.log(entries);
    return (
       <TableContainer component={Paper}>
          <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -21,11 +38,13 @@ export default function EntryTable({ entries }) {
                   <TableCell align="right">Link</TableCell>
                   <TableCell align="right">User</TableCell>
                   <TableCell align="right">Category</TableCell>
+                  <TableCell align="right">Rating</TableCell>
                   <TableCell align="right">Open</TableCell>
                </TableRow>
             </TableHead>
             <TableBody>
                {entries.map((entry) => (
+
                   <TableRow
                      key={entry.id}
                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -36,6 +55,7 @@ export default function EntryTable({ entries }) {
                      <TableCell align="right"><Link href={entry.link}>{entry.link}</Link></TableCell>
                      <TableCell align="right">{entry.user}</TableCell>
                      <TableCell align="right">{getCategory(entry.category).name}</TableCell>
+                     <TableCell align="right">{entry.rating}</TableCell>
                      <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
                         <EntryModal entry={entry} type="edit" />
                      </TableCell>

@@ -15,7 +15,7 @@ import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import firebase from 'firebase/compat/app';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {collection, onSnapshot, orderBy, query, where} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import './App.css';
 import EntryTable from './components/EntryTable';
@@ -23,6 +23,8 @@ import EntryModal from './components/EntryModal';
 import { mainListItems } from './components/listItems';
 import { db, SignInScreen } from './utils/firebase';
 import { emptyEntry } from './utils/mutations';
+import * as React from "react";
+import {categories} from "./utils/categories";
 
 // MUI styling constants
 
@@ -76,12 +78,22 @@ const mdTheme = createTheme();
 
 // App.js is the homepage and handles top-level functions like user auth.
 
+// export function getOption() {
+//
+//
+//   return option;
+// }
+
+
+
 export default function App() {
 
   // User authentication functionality. Would not recommend changing.
 
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
   const [currentUser, setcurrentUser] = useState(null); // Local user info
+  const[option, setOption] = useState("Random")
+
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
@@ -123,6 +135,27 @@ export default function App() {
   }, [currentUser]);
 
   // Main content of homescreen. This is displayed conditionally from user auth status
+  const Random = () => { //Randomize sorting order
+    if(option === "Random") {
+      setOption("Randomer");
+    } else if("Randomer") {
+      setOption("Random");
+    }
+      else{
+        setOption("Random");
+      }
+    }
+  const Sort = () => {   //Change sorting order to be ascending or descending
+    if(option === "Descending") {
+      setOption("Ascending");
+    } else{
+      setOption("Descending");
+
+    }
+
+  };
+
+
 
   function mainContent() {
     if (isSignedIn) {
@@ -132,9 +165,11 @@ export default function App() {
             <Stack direction="row" spacing={3}>
               <EntryModal entry={emptyEntry} type="add" user={currentUser} />
             </Stack>
+            <Button variant="contained" onClick={Sort}>Change Sorting</Button>
+            <Button variant="contained" onClick={Random}>Randomize</Button>
           </Grid>
           <Grid item xs={12}>
-            <EntryTable entries={entries} />
+            <EntryTable entries={entries} option = {option} />
           </Grid>
         </Grid>
       )
@@ -142,6 +177,8 @@ export default function App() {
       <SignInScreen></SignInScreen>
     )
   }
+
+
 
   return (
     <ThemeProvider theme={mdTheme}>
